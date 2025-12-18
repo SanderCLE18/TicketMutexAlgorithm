@@ -1,10 +1,13 @@
 package org.example;
 
 import java.util.ArrayList;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 
 public class Baker {
   private ArrayList<Thread> threads;
   private Thread[] criticalSection = new  Thread[1];
+  private final Lock lock = new ReentrantLock();
   private int counter = 0;
   private boolean hasThread = false;
 
@@ -15,10 +18,18 @@ public class Baker {
 
   public void addThread(Thread t){
     threads.add(t);
+    try{
+      synchronized (lock){
+        t.wait();
+      }
+    }catch(InterruptedException e){
+      System.err.println("Object could not wait: " + e);
+    }
+
   }
 
   public void callNext(){
-    if (hasThread) {
+    if (hasThread || threads.isEmpty()) {
       return;
     }
     for (Thread t : threads){

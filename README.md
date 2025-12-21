@@ -1,1 +1,1 @@
-Lamport's bakery algorithm, made in Java. 
+Ticket based mutex algorithm, made in Java. 
